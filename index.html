@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CloudFirestore CRUD</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-orange.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase.js"></script>
+    
+    <style>
+        .contenedor{
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .opciones{
+            display: none;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .opciones button{
+            margin: 3%;
+        }
+        .crear{
+            display: none;
+            width: 100%;
+            padding-left: 10%;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .crear form{
+            float: left;
+            padding-bottom: 10%;
+        }
+        .crear form input{
+            width: 200px;
+        }
+        .crear form label{
+            width: 200px;
+        }
+        .lista{
+            float: left;
+        }
+        .consultar{
+            display: none;
+            width: 100%;
+            padding-left: 10%;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .consultar form{
+            float: left;
+            padding-bottom: 10%;
+        }
+        .consultar form input{
+            width: 200px;
+        }
+        .consultar form label{
+            width: 200px;
+        }
+        .listaconsul{
+            float: left;
+        }
+        .editar{
+            display: none;
+            width: 100%;
+            padding-left: 10%;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .editar form{
+            float: left;
+            padding-bottom: 10%;
+        }
+        .editar form input{
+            width: 200px;
+        }
+        .editar form label{
+            width: 200px;
+        }
+        .eliminar{
+            display: none;
+            width: 100%;
+            padding-left: 10%;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .eliminar form{
+            float: left;
+            padding-bottom: 10%;
+        }
+        .eliminar form input{
+            width: 200px;
+        }
+        .eliminar form label{
+            width: 200px;
+        }
+    </style>
+</head>
+<body onload="carga()">
+    
+    <div class="contenedor">
+        <img src="CloudFirestore.png" style="height: 100px;">
+        <form action="#">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="apikey" value="">
+                <label class="mdl-textfield__label" for="apikey">Api Key</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="dominio">
+                <label class="mdl-textfield__label" for="dominio">Nombre del dominio</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="id">
+                <label class="mdl-textfield__label" for="id">Id del proyecto</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="rellenar()">
+                Continuar
+            </button>
+        </form>
+    </div>
+    <div class="opciones" id="opciones">
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="crear()">Crear</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="consultar()">Consultar</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="editar()">Editar</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="eliminar()">Eliminar</button>
+    </div>
+    <div class="crear" id="crear">
+        <h3 class="display-1">Crear un documento</h3>
+        <form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="collection" value="">
+                <label class="mdl-textfield__label" for="collection">Nombre de la Collecion</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="document">
+                <label class="mdl-textfield__label" for="document">Nombre del Documento</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="label">
+                <label class="mdl-textfield__label" for="label">Campo</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="value">
+                    <label class="mdl-textfield__label" for="value">Valor</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="anadir()">
+                Add
+            </button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="generar()">
+                Generar
+            </button>
+        </form>
+        <div class="lista">
+            <p id="muestra"></p>
+        </div>
+    </div>
+    <div class="consultar" id="consultar">
+        <h3 class="display-1">Consulta un documento</h3>
+        <form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="collectionconsul" value="">
+                <label class="mdl-textfield__label" for="collection">Nombre de la Collecion</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="documentconsul">
+                <label class="mdl-textfield__label" for="document">Nombre del Documento</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="consuta()">
+                Consultar
+            </button>
+        </form>
+        <div class="listaconsul">
+            <p id="muestraconsul"></p>
+        </div>
+    </div>
+    <div class="editar" id="editar">
+        <h3 class="display-1">Editar un documento</h3>
+        <form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="collectionedit" value="">
+                <label class="mdl-textfield__label" for="collectionedit">Nombre de la Collecion</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="documentedit">
+                <label class="mdl-textfield__label" for="documentedit">Nombre del Documento</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="labeledit">
+                <label class="mdl-textfield__label" for="labeledit">Campo que quieres editar</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" id="valueedit">
+                    <label class="mdl-textfield__label" for="valueedit">Nuevo Valor</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="editado()">
+                Consultar
+            </button>
+        </form>
+        <div class="lista">
+            <p id="muestra"></p>
+        </div>
+    </div>
+    <div class="eliminar" id="eliminar">
+        <h3 class="display-1">Eliminar un documento</h3>
+        <form>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="collectiondelete" value="">
+                <label class="mdl-textfield__label" for="collectiondelete">Nombre de la Collecion</label>
+            </div>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="documentdelete">
+                <label class="mdl-textfield__label" for="documentdelete">Nombre del Documento</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="eliminardoc()">
+                Eliminar documento
+            </button>
+            <br>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="labeldelete">
+                <label class="mdl-textfield__label" for="labeldelete">Campo que quieres eliminar</label>
+            </div>
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored" onclick="eliminarcampo()">
+                Eliminar campo
+            </button>
+        </form>
+        <div class="lista">
+            <p id="muestra"></p>
+        </div>
+    </div>
+    <script src="js/firebase.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html>
