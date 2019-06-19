@@ -23,7 +23,7 @@ Tienes que tener la parte de hosting de Firebase configurada en tu proyecto, est
 4. $ firebase deploy // Subimos el proyecto al hosting
 
 
-Con esto lo que hacemos es que rellenado el formilario del principio podemos cofigurar la conexión a la bbdd de nuestro proyecto para poder trabajar con el.
+Con esto lo que hacemos es que rellenado el formulario del principio podemos cofigurar la conexión a la bbdd de nuestro proyecto para poder trabajar con el.
 
 
 **Todo el código se irá comentando y mejorando con el tiempo, si ves algo que se pueda mejorar o algún error no dudes en ponerte en contacto conmigo**
